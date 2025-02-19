@@ -1,46 +1,34 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-ethers";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
-import * as dotenv from "dotenv";
+import "@typechain/hardhat";
 
-dotenv.config();
+require('dotenv').config()
+const {BASE_SEPOLIA_KEY, ACCOUNT_PRIVATE_KEY, BASESCAN_KEY } = process.env;
+
 
 const config: HardhatUserConfig = {
-  solidity: {
-    version: "0.8.28",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200
-      }
-    }
+  solidity: "0.8.28",
+
+  typechain: {
+    outDir: "typechain",  // Folder for the generated types
   },
+
   networks: {
-    hardhat: {
-      chainId: 1337
+    base: {
+      url: BASE_SEPOLIA_KEY,
+      accounts: [`0x${ACCOUNT_PRIVATE_KEY}`],
+      chainId: 84532,
     },
-    sepolia: {
-      url: process.env.SEPOLIA_URL || "",
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
-    },
-    mainnet: {
-      url: process.env.MAINNET_URL || "",
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
-    }
-  },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD"
+
+    
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY
-  },
-  typechain: {
-    outDir: "typechain-types",
-    target: "ethers-v6"
-  }
+    apiKey: BASESCAN_KEY,
+       
+  }   
 };
 
 export default config;
+
+
